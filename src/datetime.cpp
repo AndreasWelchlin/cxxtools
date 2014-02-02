@@ -110,11 +110,16 @@ DateTime::DateTime(const std::string& str, const std::string& fmt)
             break;
 
           case 'J':
+          case 'K':
             if (dit != str.end() && *dit == '.')
             {
               ++dit;
               mseconds = getMilliseconds(dit, str.end());
             }
+            break;
+
+          case 'k':
+            mseconds = getMilliseconds(dit, str.end());
             break;
 
           case 'p':
@@ -214,6 +219,13 @@ std::string DateTime::toString(const std::string& fmt) const
                       if (mseconds % 10 != 0)
                         str += (mseconds % 10 + '0');
                     }
+                    break;
+
+          case 'k': appendD3(str, mseconds);
+                    break;
+
+          case 'K': str += '.';
+                    appendD3(str, mseconds);
                     break;
 
           case 'p': str += (hours < 12 ? "am" : "pm"); break;

@@ -33,6 +33,7 @@
 #include <cxxtools/callable.h>
 #include <cxxtools/function.h>
 #include <cxxtools/method.h>
+#include <cxxtools/timespan.h>
 
 namespace cxxtools {
 
@@ -132,10 +133,21 @@ namespace cxxtools {
 
             /** @brief Sleep for some time
 
-                The calling thread sleeps for \a ms milliseconds. Throws a
-                SystemError on failure.
+                The calling thread sleeps for a specified timespan.
+                Since the Milliseconds class has conversion from double to Milliseconds
+                it is possible to pass just a number. Another possibility is to pass
+                another Timespan object. The cxxtools::Seconds is also derived from
+                Timespan an hence perfectly ok.
+
+                Example:
+
+                @code
+                  cxxtools::Thread::sleep(500);  // waits 500 milliseconds
+                  cxxtools::Thread::sleep(cxxtools::Seconds(0.5));  // waits 500 milliseconds
+                @endcode
+
             */
-            static void sleep(unsigned int ms);
+            static void sleep(const Milliseconds& ts);
 
         protected:
             //! @brief Detaches the thread

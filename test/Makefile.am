@@ -19,6 +19,7 @@ alltests_SOURCES = \
     date-test.cpp \
     datetime-test.cpp \
     file-test.cpp \
+    iniparser-test.cpp \
     iso8859_1-test.cpp \
     iso8859_15-test.cpp \
     join-test.cpp \
@@ -40,6 +41,7 @@ alltests_SOURCES = \
     string-test.cpp \
     test-main.cpp \
     time-test.cpp \
+    timespan-test.cpp \
     trim-test.cpp \
     utf8-test.cpp \
     uri-test.cpp \

@@ -86,6 +86,8 @@ class Time
               %S   seconds
               %j   milliseconds (1-3 digits, optionally leading '.')
               %J   milliseconds (1-3 digits, with leading '.')
+              %K   milliseconds (3 digits, with leading '.')
+              %k   milliseconds (3 digits)
               %p   AM/PM
          */
         explicit Time(const std::string& d, const std::string& fmt = "%H:%M:%S%j");
@@ -170,6 +172,8 @@ class Time
               %S   seconds
               %j   milliseconds (1-3 digits, optionally leading '.')
               %J   milliseconds (1-3 digits, with leading '.')
+              %K   milliseconds (3 digits, with leading '.')
+              %k   milliseconds (3 digits)
               %p   am/pm
               %P   AM/PM
          */
@@ -262,7 +266,7 @@ class Time
         */
         Time& operator+=(const Timespan& ts)
         {
-            int64_t msecs = ( _msecs + ts.totalMSecs() ) % MSecsPerDay;
+            int64_t msecs = ( _msecs + ts.totalUSecs() / 1000) % MSecsPerDay;
             msecs = msecs < 0 ? MSecsPerDay + msecs : msecs;
             _msecs = static_cast<unsigned>(msecs);
             return *this;
@@ -272,7 +276,7 @@ class Time
         */
         Time& operator-=(const Timespan& ts)
         {
-            int64_t msecs = ( _msecs - ts.totalMSecs() ) % MSecsPerDay;
+            int64_t msecs = ( _msecs - ts.totalUSecs() / 1000) % MSecsPerDay;
             msecs = msecs < 0 ? MSecsPerDay + msecs : msecs;
             _msecs = static_cast<unsigned>(msecs);
             return *this;
@@ -282,7 +286,7 @@ class Time
         */
         friend Time operator+(const Time& time, const Timespan& ts)
         {
-            return time.addMSecs( ts.totalMSecs() );
+            return time.addMSecs( ts.totalUSecs() / 1000 );
         }
 
         /** @brief Substraction operator

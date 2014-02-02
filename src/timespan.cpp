@@ -27,6 +27,7 @@
  */
 
 #include <cxxtools/timespan.h>
+#include <cxxtools/serializationinfo.h>
 #include <sys/time.h>
 #include <time.h>
 #include <iostream>
@@ -40,9 +41,46 @@ namespace cxxtools
         return Timespan(tv.tv_sec, tv.tv_usec);
     }
 
-    std::ostream& operator<< (std::ostream& out, const Timespan& ht)
+    std::ostream& operator<< (std::ostream& out, const Timespan& ts)
     {
-        out << static_cast<double>(ht.toUSecs()) / 1e6;
+        out << static_cast<double>(ts.totalUSecs()) / 1e6;
         return out;
     }
+
+    std::istream& operator>> (std::istream& in, Timespan& ts)
+    {
+        uint64_t usecs;
+        in >> usecs;
+        if (in)
+            ts = Timespan(usecs);
+        return in;
+    }
+
+    namespace tshelper
+    {
+        void get(std::istream& in, Timespan& ts, uint64_t res)
+        {
+            double usecs;
+            in >> usecs;
+            if (in)
+                ts = Timespan(usecs * res);
+        }
+    }
+
+    void operator >>=(const SerializationInfo& si, Timespan& timespan)
+    {
+        double s;
+        si >>= s;
+        if (s >= 0)
+            timespan = Timespan(static_cast<int64_t>(s * 1e6 + .5));
+        else
+            timespan = Timespan(static_cast<int64_t>(s * 1e6 - .5));
+    }
+
+    void operator <<=(SerializationInfo& si, const Timespan& timespan)
+    {
+        si.setTypeName("seconds");
+        si <<= (timespan.totalUSecs() / 1e6);
+    }
+
 }
